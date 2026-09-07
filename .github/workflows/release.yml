@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+      - name: Build release packages with runtimes
+        shell: pwsh
+        run: ./build/Build.ps1 -Platform All -DownloadDependencies -IncludeRuntime -OutputRoot artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-packages
+          path: artifacts/*.zip
+      - name: Publish release assets
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip

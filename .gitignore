@@ -1,3 +1,17 @@
 **/bin/
 **/obj/
 .gitignore
+
+# Local build directories
+build_linux/
+build_windows/
+artifacts/
+artifacts-*/
+
+# Generated archives and comparison data
+*.zip
+compare/
+
+# Downloaded compile-time libraries
+**/libs/
+.build-dependencies/

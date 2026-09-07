@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+      - name: Build plugin-only packages
+        shell: pwsh
+        run: ./build/Build.ps1 -Platform All -DownloadDependencies -OutputRoot artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin-packages
+          path: artifacts/*.zip
